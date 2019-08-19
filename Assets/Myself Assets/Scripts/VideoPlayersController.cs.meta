@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 929236a7119247f48babc83cce516937
+timeCreated: 1517437999
+licenseType: Free
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - PlaySprite: {fileID: 21300000, guid: b0b8caa96d3f24c4182e5de81042bb3d, type: 3}
+  - PauseSprite: {fileID: 21300000, guid: 170dfedf43df0c04f83a79855ce79555, type: 3}
+  - FullScreenSprite: {fileID: 21300000, guid: 002afd9452385e04990a44aa0994e62b, type: 3}
+  - SmallScreenSprite: {fileID: 21300000, guid: 8a356fc3e5471c946a3d906fba7ac3c6,
+      type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

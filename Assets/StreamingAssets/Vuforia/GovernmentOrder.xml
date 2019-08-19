@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QCARConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="qcar_config.xsd">
+  <Tracking>
+    <ImageTarget name="Flopam2" size="10.000000 7.500000" />
+    <ImageTarget name="Bridge" size="10.000000 9.251101" />
+    <ImageTarget name="Flopam" size="10.000000 1.562500" />
+    <ImageTarget name="Holcim" size="10.000000 4.311927" />
+    <ImageTarget name="Vossloh" size="10.000000 2.344771" />
+    <ImageTarget name="Severstal" size="10.000000 5.653333" />
+    <ImageTarget name="PigComplex" size="10.000000 2.880933" />
+    <ImageTarget name="Pridonye" size="10.000000 7.582938" />
+    <ImageTarget name="RosAgro" size="10.000000 9.716088" />
+    <ImageTarget name="Waste" size="10.000000 5.365402" />
+    <ImageTarget name="Baltex" size="10.000000 5.625000" />
+    <ImageTarget name="Airport" size="10.000000 11.339286" />
+    <ImageTarget name="Avelar" size="10.000000 2.303030" />
+    <ImageTarget name="VKK" size="10.000000 10.701340" />
+    <ImageTarget name="ELZ" size="10.000000 9.351032" />
+  </Tracking>
+</QCARConfig>
