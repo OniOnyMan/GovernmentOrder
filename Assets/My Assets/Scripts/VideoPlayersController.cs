@@ -117,8 +117,9 @@ public class VideoPlayersController : MonoBehaviour {
         if (condition)
         {
             _trackedVideoPlayer = target.GetComponentInChildren<VideoPlayer>();
-            _fullScreenPlayer.GetComponent<RawImage>().texture = _trackedVideoPlayer.targetTexture;
+            _fullScreenPlayer.transform.GetChild(0).GetComponent<RawImage>().texture = _trackedVideoPlayer.targetTexture;
             _trackedVideoPlayer.loopPointReached += EndPlayer;
+            _trackedVideoPlayer.prepareCompleted += EndLoadingAnimation;
             ShowPlayerButtons(true);
         }
         else
@@ -144,6 +145,7 @@ public class VideoPlayersController : MonoBehaviour {
             && _trackedVideoPlayerTargets.Count > 0 && !_isInFullScreenMod)
         {
             _trackedVideoPlayer.loopPointReached -= EndPlayer;
+            _trackedVideoPlayer.prepareCompleted -= EndLoadingAnimation;
             while (_targetIndex < 0)
                 _targetIndex += _trackedVideoPlayerTargets.Count;
             while (_targetIndex >= _trackedVideoPlayerTargets.Count)
@@ -163,10 +165,38 @@ public class VideoPlayersController : MonoBehaviour {
         }
         else
         {
-            preview.SetActive(false);
-            previewFull.SetActive(false);
+            if (preview.activeInHierarchy)
+            {
+                var background = _trackedVideoPlayer.transform.Find("LoadingBackground").GetComponent<Animator>();
+                background.SetTrigger("Running");
+                background.transform.GetChild(0).GetComponent<Animator>().SetTrigger("Running");
+                preview.SetActive(false);
+            }
+            if (previewFull.activeInHierarchy)
+            {
+                var backgroundUI = _fullScreenPlayer.transform.Find("LoadingBackground").GetComponent<Animator>();
+                backgroundUI.SetTrigger("Running");
+                backgroundUI.transform.GetChild(0).GetComponent<Animator>().SetTrigger("Running");
+                previewFull.SetActive(false);
+            }
             _trackedVideoPlayer.Play();
             _playButtonImage.overrideSprite = PauseSprite;
+        }
+    }
+
+    private void EndLoadingAnimation(VideoPlayer source)
+    {
+        if (source.isPrepared)
+        {
+            var background = _trackedVideoPlayer.transform.Find("LoadingBackground").GetComponent<Animator>();
+            background.SetTrigger("Ending");
+            background.transform.GetChild(0).GetComponent<Animator>().SetTrigger("Ending");
+            if (_isInFullScreenMod)
+            {
+                var backgroundUI = _fullScreenPlayer.transform.Find("LoadingBackground").GetComponent<Animator>();
+                backgroundUI.SetTrigger("Ending");
+                backgroundUI.transform.GetChild(0).GetComponent<Animator>().SetTrigger("Ending");
+            }
         }
     }
 
@@ -236,6 +266,7 @@ public class VideoPlayersController : MonoBehaviour {
                 {
                     _trackedVideoPlayer.Stop();
                     _trackedVideoPlayer.loopPointReached -= EndPlayer;
+                    _trackedVideoPlayer.prepareCompleted -= EndLoadingAnimation;
                     _playButtonImage.overrideSprite = PlaySprite;
                     _trackedVideoPlayer.transform.Find("PreviewImage").gameObject.SetActive(true);
                     _fullScreenPlayer.transform.Find("PreviewImage").gameObject.SetActive(true);
