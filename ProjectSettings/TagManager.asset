@@ -11,6 +11,8 @@ TagManager:
   - NextButton
   - PreviousButton
   - Target
+  - FullScreenCamera
+  - ARCamera
   layers:
   - Default
   - TransparentFX
