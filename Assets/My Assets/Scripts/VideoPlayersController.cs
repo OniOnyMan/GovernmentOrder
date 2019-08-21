@@ -28,6 +28,22 @@ public class VideoPlayersController : MonoBehaviour {
     public Sprite FullScreenSprite;
     public Sprite SmallScreenSprite;
 
+    public GameObject FullScreenPreview
+    {
+        get
+        {
+            return _fullScreenPlayer.transform.Find("PreviewImage").gameObject;
+        }
+    }
+
+    public GameObject TrackedVideoPreview
+    {
+        get
+        {
+            return _trackedVideoPlayer == null ? null : _trackedVideoPlayer.transform.Find("PreviewImage").gameObject;
+        }
+    }
+
     void Awake()
     {
         GetUIElements();
@@ -94,7 +110,7 @@ public class VideoPlayersController : MonoBehaviour {
             if (_trackedVideoPlayerTargets.Count > 1 && !_isInFullScreenMod)
                 ShowSwitchButtons(true);
             if (!_isInFullScreenMod)
-                _fullScreenPlayer.transform.Find("PreviewImage").gameObject.SetActive(true);
+                FullScreenPreview.SetActive(true);
         }
         else
         {
@@ -133,9 +149,9 @@ public class VideoPlayersController : MonoBehaviour {
     {
         source.Stop();
         _playButtonImage.overrideSprite = PlaySprite;
-        _trackedVideoPlayer.transform.Find("PreviewImage").gameObject.SetActive(true);
+        TrackedVideoPreview.SetActive(true);
         if (_isInFullScreenMod)
-            _fullScreenPlayer.transform.Find("PreviewImage").gameObject.SetActive(true);
+            FullScreenPreview.gameObject.SetActive(true);
     }
 
     private void RendNextVideoScreenIfTracked(bool condition, GameObject sender)
@@ -156,8 +172,6 @@ public class VideoPlayersController : MonoBehaviour {
     
     public void PlayButtonPressed()
     {
-        var preview = _trackedVideoPlayer.transform.Find("PreviewImage").gameObject;
-        var previewFull = _fullScreenPlayer.transform.Find("PreviewImage").gameObject;
         if (_trackedVideoPlayer.isPlaying)
         {
             _trackedVideoPlayer.Pause();
@@ -165,19 +179,19 @@ public class VideoPlayersController : MonoBehaviour {
         }
         else
         {
-            if (preview.activeInHierarchy)
+            if (TrackedVideoPreview.activeInHierarchy)
             {
                 var background = _trackedVideoPlayer.transform.Find("LoadingBackground").GetComponent<Animator>();
                 background.SetTrigger("Running");
                 background.transform.GetChild(0).GetComponent<Animator>().SetTrigger("Running");
-                preview.SetActive(false);
+                TrackedVideoPreview.SetActive(false);
             }
-            if (previewFull.activeInHierarchy)
+            if (FullScreenPreview.activeInHierarchy)
             {
                 var backgroundUI = _fullScreenPlayer.transform.Find("LoadingBackground").GetComponent<Animator>();
                 backgroundUI.SetTrigger("Running");
                 backgroundUI.transform.GetChild(0).GetComponent<Animator>().SetTrigger("Running");
-                previewFull.SetActive(false);
+                FullScreenPreview.SetActive(false);
             }
             _trackedVideoPlayer.Play();
             _playButtonImage.overrideSprite = PauseSprite;
@@ -216,7 +230,6 @@ public class VideoPlayersController : MonoBehaviour {
     public void NextButtonPressed(bool isPrevious)
     {
         var temp = _targetIndex;
-        var previewFull = _fullScreenPlayer.transform.Find("PreviewImage").gameObject;
         if (isPrevious)
         {
             if (_targetIndex - 1 >= 0)
@@ -231,7 +244,7 @@ public class VideoPlayersController : MonoBehaviour {
             else
                 _targetIndex = 0;
         }
-        previewFull.SetActive(true);
+        FullScreenPreview.SetActive(true);
         StopPlayerOnLost(false, _trackedVideoPlayerTargets[temp].gameObject);
         RendVideoScreen(false, _trackedVideoPlayerTargets[temp]);
         RendNextVideoScreenIfTracked(false, _trackedVideoPlayerTargets[temp].gameObject);
@@ -259,27 +272,36 @@ public class VideoPlayersController : MonoBehaviour {
                 EndPlayer(_trackedVideoPlayer);
                 _trackedVideoPlayer = null;
             }
-            if (_trackedVideoPlayerTargets.Count == 1)
+            if (_trackedVideoPlayer != null && !GetVideoPlayersFromTargetTracks(_trackedVideoPlayerTargets).Contains(_trackedVideoPlayer))
             {
-                var trackedVideoPlayerRealTime = _trackedVideoPlayerTargets[0].GetComponentInChildren<VideoPlayer>();
-                if (_trackedVideoPlayer != trackedVideoPlayerRealTime)
-                {
-                    _trackedVideoPlayer.Stop();
-                    _trackedVideoPlayer.loopPointReached -= EndPlayer;
-                    _trackedVideoPlayer.prepareCompleted -= EndLoadingAnimation;
-                    _playButtonImage.overrideSprite = PlaySprite;
-                    _trackedVideoPlayer.transform.Find("PreviewImage").gameObject.SetActive(true);
-                    _fullScreenPlayer.transform.Find("PreviewImage").gameObject.SetActive(true);
-                    RendVideoScreen(true, _trackedVideoPlayerTargets[0]);
-                }
+                _trackedVideoPlayer.Stop();
+                _trackedVideoPlayer.loopPointReached -= EndPlayer;
+                _trackedVideoPlayer.prepareCompleted -= EndLoadingAnimation;
+                _playButtonImage.overrideSprite = PlaySprite;
+                TrackedVideoPreview.SetActive(true);
+                FullScreenPreview.SetActive(true);
+                RendVideoScreen(true, _trackedVideoPlayerTargets[0]);
+
             }
         }
         else
         {
+            FullScreenPreview.GetComponent<RawImage>().texture = TrackedVideoPreview.GetComponent<MeshRenderer>().material.mainTexture;
+            FullScreenPreview.gameObject.SetActive(TrackedVideoPreview.activeInHierarchy);
             _isInFullScreenMod = true;
             _fullScreenPlayer.SetActive(true);
             _fullScreenButtonImage.overrideSprite = SmallScreenSprite;
             ShowSwitchButtons(false);
         }
+    }
+
+    public VideoPlayer[] GetVideoPlayersFromTargetTracks(List<TargetTrack> sourse)
+    {
+        var result = new List<VideoPlayer>();
+        foreach (var target in sourse)
+        {
+            result.Add(target.GetComponentInChildren<VideoPlayer>());
+        }
+        return result.ToArray();
     }
 }

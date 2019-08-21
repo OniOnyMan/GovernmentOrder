@@ -4,4 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/My Assets/Scenes/Chemesrty.unity
+    guid: 18e1371443608184d83d3271ce11d5cd
+  m_configObjects: {}
