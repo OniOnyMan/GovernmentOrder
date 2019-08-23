@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311992, g: 0.38074034, b: 0.35872713, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -436,6 +436,7 @@ GameObject:
   - component: {fileID: 222230400452497042}
   - component: {fileID: 1924446270229797}
   - component: {fileID: 1924446270229798}
+  - component: {fileID: 1924446270229799}
   m_Layer: 5
   m_Name: FullScreenPlayer
   m_TagString: FullScreenPlayer
@@ -451,7 +452,7 @@ VideoPlayer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1924446270229796}
   m_Enabled: 1
-  m_VideoClip: {fileID: 32900000, guid: fd7c3e805c6cc1640a743fb2413380ed, type: 3}
+  m_VideoClip: {fileID: 32900000, guid: b544a1ddf67f0b345aae441b93682056, type: 3}
   m_TargetCameraAlpha: 1
   m_TargetCamera3DLayout: 0
   m_TargetCamera: {fileID: 0}
@@ -464,12 +465,14 @@ VideoPlayer:
   m_DataSource: 0
   m_PlaybackSpeed: 1
   m_AudioOutputMode: 1
-  m_TargetAudioSources: []
-  m_DirectAudioVolumes: []
+  m_TargetAudioSources:
+  - {fileID: 0}
+  m_DirectAudioVolumes:
+  - 1
   m_Url: 
-  m_EnabledAudioTracks: 
-  m_DirectAudioMutes: 
-  m_ControlledAudioTrackCount: 0
+  m_EnabledAudioTracks: 01
+  m_DirectAudioMutes: 00
+  m_ControlledAudioTrackCount: 1
   m_PlayOnAwake: 0
   m_SkipOnDrop: 1
   m_Looping: 0
@@ -492,6 +495,18 @@ MonoBehaviour:
   PlayButtonImage: {fileID: 114691560567865118}
   PlaySprite: {fileID: 21300000, guid: b0b8caa96d3f24c4182e5de81042bb3d, type: 3}
   PauseSprite: {fileID: 21300000, guid: 170dfedf43df0c04f83a79855ce79555, type: 3}
+--- !u!114 &1924446270229799
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1924446270229796}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5cec541b8fa95c04bb45810a24de162c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114153128900544580
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1356,7 +1371,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Texture: {fileID: 0}
+  m_Texture: {fileID: 8400000, guid: 8eee0f15d51997244b88ef7a288b3e3c, type: 2}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -1375,6 +1390,7 @@ GameObject:
   - component: {fileID: 1479336693420021401}
   - component: {fileID: 7085906474376046664}
   - component: {fileID: 7981082442821945032}
+  - component: {fileID: 7981082441959080182}
   m_Layer: 5
   m_Name: LoadingBackground
   m_TagString: Untagged
@@ -1382,6 +1398,18 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &7981082441959080182
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7981082441959080181}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f18a5cd704fb36649ba8fe60bf3beb49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!95 &7981082442821945032
 Animator:
   serializedVersion: 3

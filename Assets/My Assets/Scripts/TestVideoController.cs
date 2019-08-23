@@ -25,9 +25,7 @@ public class TestVideoController : MonoBehaviour
         {
             if (Preview.activeInHierarchy)
             {
-                var background = VideoPlayer.transform.Find("LoadingBackground").GetComponent<Animator>();
-                background.SetTrigger("Running");
-                background.transform.GetChild(0).GetComponent<Animator>().SetTrigger("Running");
+                VideoPlayer.GetComponent<LoadingAnimator>().SetRunning();
                 Preview.SetActive(false);
             }
             VideoPlayer.Play();
@@ -56,12 +54,7 @@ public class TestVideoController : MonoBehaviour
 
     private void EndLoadingAnimation(VideoPlayer source)
     {
-        if (source.isPrepared)
-        {
-            var background = VideoPlayer.transform.Find("LoadingBackground").GetComponent<Animator>();
-            background.SetTrigger("Ending");
-            background.transform.GetChild(0).GetComponent<Animator>().SetTrigger("Ending");
-        }
+        VideoPlayer.GetComponent<LoadingAnimator>().SetEnding();
     }
 }
 

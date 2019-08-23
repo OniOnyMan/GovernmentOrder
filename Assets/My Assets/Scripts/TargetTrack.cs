@@ -5,6 +5,8 @@ using Vuforia;
 
 public class TargetTrack : MonoBehaviour, ITrackableEventHandler
 {
+    public TargetTrack DublicatedTarget;
+
     private TrackableBehaviour mTrackableBehaviour;
     private bool isTracked = false;
     

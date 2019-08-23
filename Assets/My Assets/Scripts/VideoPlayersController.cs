@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
@@ -21,12 +19,14 @@ public class VideoPlayersController : MonoBehaviour
     private GameObject _fullScreenButton;
     private Image _fullScreenButtonImage;
     private GameObject _fullScreenPlayer;
+    private GameObject _exitDialog;
 
     //private List<TargetTrack> _videoPlayerTargets;
     private List<TargetTrack> _trackedVideoPlayerTargets;
     private VideoPlayer _trackedVideoPlayer;
     private int _targetIndex = 0;
     private bool _isInFullScreenMod = false;
+    private bool _isExitDialog = false;
 
     public GameObject FullScreenPreview
     {
@@ -51,6 +51,27 @@ public class VideoPlayersController : MonoBehaviour
         _trackedVideoPlayerTargets = new List<TargetTrack>();
         _playButtonImage = _playButton.GetComponentsInChildren<Image>()[1];
         _fullScreenButtonImage = _fullScreenButton.GetComponentsInChildren<Image>()[1];
+        _exitDialog = GameObject.FindGameObjectWithTag("ExitDialog");
+        _exitDialog.SetActive(false);
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+            if (_isInFullScreenMod)
+                FullScreenButtonPressed();
+            else SetExitDialogActive(!_isExitDialog);
+    }
+
+    public void SetExitDialogActive(bool state)
+    {
+        _isExitDialog = state;
+        _exitDialog.SetActive(state);
+    }
+
+    public void Quit()
+    {
+        Application.Quit();
     }
 
     private void GetUIElements()
@@ -99,7 +120,9 @@ public class VideoPlayersController : MonoBehaviour
         var target = sender.GetComponent<TargetTrack>();
         if (condition)
         {
-            _trackedVideoPlayerTargets.Add(target);
+            if(!_trackedVideoPlayerTargets.Exists(x => x.DublicatedTarget == target))
+                _trackedVideoPlayerTargets.Add(target);
+
             Debug.Log(sender.gameObject.name + " is tracked");
                       //+ " on " + _trackedVideoPlayerTargets.IndexOf(target) + " index");
             if (_trackedVideoPlayer == null //TODO: check
@@ -181,16 +204,12 @@ public class VideoPlayersController : MonoBehaviour
         {
             if (TrackedVideoPreview.activeInHierarchy)
             {
-                var background = _trackedVideoPlayer.transform.Find("LoadingBackground").GetComponent<Animator>();
-                background.SetTrigger("Running");
-                background.transform.GetChild(0).GetComponent<Animator>().SetTrigger("Running");
+                _trackedVideoPlayer.GetComponent<LoadingAnimator>().SetRunning();
                 TrackedVideoPreview.SetActive(false);
             }
             if (FullScreenPreview.activeInHierarchy)
             {
-                var backgroundUI = _fullScreenPlayer.transform.Find("LoadingBackground").GetComponent<Animator>();
-                backgroundUI.SetTrigger("Running");
-                backgroundUI.transform.GetChild(0).GetComponent<Animator>().SetTrigger("Running");
+                _fullScreenPlayer.GetComponent<LoadingAnimator>().SetRunning();
                 FullScreenPreview.SetActive(false);
             }
             _trackedVideoPlayer.Play();
@@ -200,17 +219,10 @@ public class VideoPlayersController : MonoBehaviour
 
     private void EndLoadingAnimation(VideoPlayer source)
     {
-        if (source.isPrepared)
+        _trackedVideoPlayer.GetComponent<LoadingAnimator>().SetEnding();
+        if (_isInFullScreenMod)
         {
-            var background = _trackedVideoPlayer.transform.Find("LoadingBackground").GetComponent<Animator>();
-            background.SetTrigger("Ending");
-            background.transform.GetChild(0).GetComponent<Animator>().SetTrigger("Ending");
-            if (_isInFullScreenMod)
-            {
-                var backgroundUI = _fullScreenPlayer.transform.Find("LoadingBackground").GetComponent<Animator>();
-                backgroundUI.SetTrigger("Ending");
-                backgroundUI.transform.GetChild(0).GetComponent<Animator>().SetTrigger("Ending");
-            }
+            _fullScreenPlayer.GetComponent<LoadingAnimator>().SetEnding();
         }
     }
 
@@ -262,9 +274,10 @@ public class VideoPlayersController : MonoBehaviour
         if (_isInFullScreenMod)
         {
             _isInFullScreenMod = false;
+            _trackedVideoPlayer.transform.GetChild(0).gameObject.SetActive(true);
             _fullScreenPlayer.SetActive(false);
             _fullScreenButtonImage.overrideSprite = FullScreenSprite;
-            if(_trackedVideoPlayerTargets.Count > 1)
+            if (_trackedVideoPlayerTargets.Count > 1)
                 ShowSwitchButtons(true);
             if (_trackedVideoPlayerTargets.Count == 0)
             {
@@ -289,6 +302,7 @@ public class VideoPlayersController : MonoBehaviour
             FullScreenPreview.gameObject.SetActive(TrackedVideoPreview.activeInHierarchy);
             _isInFullScreenMod = true;
             _fullScreenPlayer.SetActive(true);
+            _trackedVideoPlayer.transform.GetChild(0).gameObject.SetActive(false);
             _fullScreenButtonImage.overrideSprite = SmallScreenSprite;
             ShowSwitchButtons(false);
         }

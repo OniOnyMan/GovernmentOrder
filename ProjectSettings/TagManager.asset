@@ -13,6 +13,8 @@ TagManager:
   - Target
   - FullScreenCamera
   - ARCamera
+  - InactiveObject
+  - ExitDialog
   layers:
   - Default
   - TransparentFX
