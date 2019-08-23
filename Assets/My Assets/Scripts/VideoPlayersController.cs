@@ -8,7 +8,6 @@ using UnityEngine.Video;
 
 public class VideoPlayersController : MonoBehaviour
 {
-    public bool SwipeARCamera = false;
     public Sprite PlaySprite;
     public Sprite PauseSprite;
     public Sprite FullScreenSprite;
@@ -22,8 +21,6 @@ public class VideoPlayersController : MonoBehaviour
     private GameObject _fullScreenButton;
     private Image _fullScreenButtonImage;
     private GameObject _fullScreenPlayer;
-    private GameObject _vuforiaCamera;
-    private GameObject _fullScreenCamera;
 
     //private List<TargetTrack> _videoPlayerTargets;
     private List<TargetTrack> _trackedVideoPlayerTargets;
@@ -54,9 +51,6 @@ public class VideoPlayersController : MonoBehaviour
         _trackedVideoPlayerTargets = new List<TargetTrack>();
         _playButtonImage = _playButton.GetComponentsInChildren<Image>()[1];
         _fullScreenButtonImage = _fullScreenButton.GetComponentsInChildren<Image>()[1];
-        _fullScreenCamera = GameObject.FindGameObjectWithTag("FullScreenCamera");
-        _fullScreenCamera.SetActive(false);
-        _vuforiaCamera = GameObject.FindGameObjectWithTag("ARCamera");
     }
 
     private void GetUIElements()
@@ -259,7 +253,7 @@ public class VideoPlayersController : MonoBehaviour
     public void ResetButtonPressed()
     {
         _trackedVideoPlayer.Stop();
-        _playButtonImage.overrideSprite = PlaySprite;
+        //_playButtonImage.overrideSprite = PlaySprite;
         PlayButtonPressed();
     }
 
@@ -267,11 +261,6 @@ public class VideoPlayersController : MonoBehaviour
     {
         if (_isInFullScreenMod)
         {
-            if (SwipeARCamera)
-            {
-                _vuforiaCamera.SetActive(true);
-                _fullScreenCamera.SetActive(false);
-            }
             _isInFullScreenMod = false;
             _fullScreenPlayer.SetActive(false);
             _fullScreenButtonImage.overrideSprite = FullScreenSprite;
@@ -302,11 +291,6 @@ public class VideoPlayersController : MonoBehaviour
             _fullScreenPlayer.SetActive(true);
             _fullScreenButtonImage.overrideSprite = SmallScreenSprite;
             ShowSwitchButtons(false);
-            if (SwipeARCamera)
-            {
-                _vuforiaCamera.SetActive(false);
-                _fullScreenCamera.SetActive(true);
-            }
         }
     }
 
