@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.Video;
+using System;
 
 public class VideoContainer : MonoBehaviour
 {
@@ -21,13 +22,24 @@ public class VideoContainer : MonoBehaviour
 
     private void Start()
     {
-        SetMaterialTexture(PreviewSprite.texture);
-        transform.parent.GetComponent<TrackableEventHandler>().OnTracked += VideoPlayerController.Instance.NewTargetTracked;
+        ResetMaterialTexture();
+        transform.parent.GetComponent<TrackableEventHandler>().OnTracked += VideoPlayerController.Instance.TargetTrackeStateChanged;
+        //transform.parent.GetComponent<TrackableEventHandler>().OnTracked += NewMethod;
+    }
+
+    private void NewMethod(bool arg1, TrackableEventHandler arg2)
+    {
+        Debug.LogErrorFormat("[C] {0} is tracked with result {2}", arg2.name, arg1);
     }
 
     public void SetMaterialTexture(Texture texture)
     {
         RenderedMaterial.SetTexture("_MainTex", texture);
         RenderedMaterial.SetTexture("_EmissionMap", texture);
+    }
+
+    public void ResetMaterialTexture()
+    {
+        SetMaterialTexture(PreviewSprite.texture);
     }
 }

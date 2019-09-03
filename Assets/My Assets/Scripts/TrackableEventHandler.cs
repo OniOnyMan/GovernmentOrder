@@ -4,15 +4,17 @@ using Vuforia;
 
 public class TrackableEventHandler : MonoBehaviour, ITrackableEventHandler
 {
-    public TrackableEventHandler DublicatedTarget;
+    public TrackableEventHandler[] DublicatedTargets;
     public bool IsRenderAllow = true;
     public bool IsTracked = false;
-    public event Action<bool, TrackableEventHandler> OnTracked;
+    public event Action<bool, TrackableEventHandler> OnTracked { add { _onTracked += value; } remove { _onTracked -= value; } }
 
     private TrackableBehaviour mTrackableBehaviour;
     private TrackableBehaviour.Status m_PreviousStatus;
     private TrackableBehaviour.Status m_NewStatus;
     private VideoContainer _childVideoScreen;
+    private bool _isRegistrated = false;
+    private Action<bool, TrackableEventHandler> _onTracked;
 
     public VideoContainer ChildVideoContainer
     {
@@ -64,14 +66,41 @@ public class TrackableEventHandler : MonoBehaviour, ITrackableEventHandler
             newStatus == TrackableBehaviour.Status.TRACKED ||
             newStatus == TrackableBehaviour.Status.EXTENDED_TRACKED)
         {
-            if (OnTracked != null && !IsTracked)
-                OnTracked.Invoke(IsTracked = true, this);
+            if (_isRegistrated)
+            {
+                Debug.LogWarning("[T] " + name + " is tracked by Camera");
+                Debug.LogWarningFormat("[T_oldCondition] {0}", IsTracked);
+
+                if (_onTracked != null && !IsTracked)
+                {
+                    Debug.LogWarningFormat("[T_setCondition] {0}", (IsTracked = true).ToString());
+                    _onTracked.Invoke(IsTracked = true, this);
+                }
+                Debug.LogWarningFormat("[T_newCondition] {0}", IsTracked);
+            }
+            else _isRegistrated = true;
         }
-        else 
+        else
         {
-            if (OnTracked != null && IsTracked)
-                OnTracked.Invoke(IsTracked = false, this);
+            if (_isRegistrated)
+            {
+                Debug.LogWarning("[T] " + name + " is lost by Camera");
+                Debug.LogWarningFormat("[T_oldCondition] {0}", IsTracked);
+
+                if (_onTracked != null && IsTracked)
+                {
+                    Debug.LogWarningFormat("[T_setCondition] {0}", (IsTracked = false).ToString());
+                    _onTracked.Invoke(IsTracked = false, this);
+                }
+                Debug.LogWarningFormat("[T_newCondition] {0}", IsTracked);
+            }
+            else _isRegistrated = true;
         }
+
+        if (IsRenderAllow)
+            EnableComponents(IsTracked);
+        else if (!IsTracked)
+            EnableComponents(IsTracked);
     }
 
     private void Start()
