@@ -92,6 +92,7 @@ public class VideoPlayerController : MonoBehaviour
         if (condition)
         {
             Debug.LogWarningFormat("{0} has catched", sender.gameObject.name);
+
             var existCondition = _trackedTargets.Exists(item => item.DublicatedTargets.FirstOrDefault(dublicate => dublicate == sender));
             Debug.LogWarningFormat("_trackedTarges.Exist {0} with result {1}", sender.name, existCondition);
             if (!existCondition)
