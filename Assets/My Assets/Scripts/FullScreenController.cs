@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using DG.Tweening;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,6 +7,12 @@ using UnityEngine.UI;
 public class FullScreenController : MonoBehaviour
 {
     private RawImage _sceenImage;
+    private Image _loadingImage;
+    private Image _circleImage;
+    private float _disableTime = 0.3f;
+    private float _circleRotatingTime = 0.4f;
+    private Color _spriteColor;
+    private Color _circleSpriteColor;
 
     public static FullScreenController Instance { get; private set; }
     
@@ -30,15 +37,34 @@ public class FullScreenController : MonoBehaviour
         gameObject.SetActive(false);
     }
 
+    public void DisableLoadingScreen()
+    {
+        _loadingImage.DOColor(new Color(_loadingImage.color.r, _loadingImage.color.g, _loadingImage.color.b, 0), _disableTime).SetEase(Ease.Linear).OnComplete(() => _loadingImage.gameObject.SetActive(false));
+        _circleImage.DOColor(new Color(_circleImage.color.r, _circleImage.color.g, _circleImage.color.b, 0), _disableTime).SetEase(Ease.Linear);
+    }
+
+    public void ShowLoadingScreen()
+    {
+        _loadingImage.color = _spriteColor;
+        _circleImage.color = _circleSpriteColor;
+        _loadingImage.gameObject.SetActive(true);
+    }
+
     private void Awake()
     {
         Instance = this;
-        _foundChildScreen();
+        SetUp();
         DisableFullScreen();
     }
 
-    private void _foundChildScreen() {
-        if (_sceenImage == null)
+    public void SetUp() {
+        if (!_sceenImage)
             _sceenImage = transform.GetChild(0).GetComponent<RawImage>();
+        if (!_loadingImage)
+            _loadingImage = _sceenImage.transform.GetChild(0).GetComponent<Image>();
+        if (!_circleImage)
+            _circleImage = _loadingImage.transform.GetChild(0).GetComponent<Image>();
+        _spriteColor = _loadingImage.color;
+        _circleSpriteColor = _circleImage.color;
     }
 }

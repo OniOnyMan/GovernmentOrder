@@ -67,12 +67,12 @@ public class VideoPlayersqwerty : MonoBehaviour
         {
             if (TrackedVideoPreview.activeInHierarchy)
             {
-                _trackedVideoPlayer.GetComponent<LoadingAnimator>().SetRunning();
+                _trackedVideoPlayer.GetComponent<LoadingAnimator123>().SetRunning();
                 TrackedVideoPreview.SetActive(false);
             }
             if (FullScreenPreview.activeInHierarchy)
             {
-                FullScreenPlayer.GetComponent<LoadingAnimator>().SetRunning();
+                FullScreenPlayer.GetComponent<LoadingAnimator123>().SetRunning();
                 FullScreenPreview.SetActive(false);
             }
             _trackedVideoPlayer.Play();
@@ -313,10 +313,10 @@ public class VideoPlayersqwerty : MonoBehaviour
 
     private void EndLoadingAnimation(VideoPlayer source)
     {
-        _trackedVideoPlayer.GetComponent<LoadingAnimator>().SetEnding();
+        _trackedVideoPlayer.GetComponent<LoadingAnimator123>().SetEnding();
         if (_isInFullScreenMod)
         {
-            FullScreenPlayer.GetComponent<LoadingAnimator>().SetEnding();
+            FullScreenPlayer.GetComponent<LoadingAnimator123>().SetEnding();
         }
     }
 }

@@ -50,6 +50,7 @@ public class VideoPlayerController : MonoBehaviour
     private List<TrackableEventHandler> _trackedTargets;
     private int _trackedTargetIndex = -1;
     private bool _isFullScreen;
+    private bool _isExitDialog;
 
     public void TargetTrackeStateChanged(bool condition, TrackableEventHandler sender)
     {
@@ -103,7 +104,7 @@ public class VideoPlayerController : MonoBehaviour
             if (_trackedTargets.Count > 0)
                 RenderTrackedTarget(true);
 
-            if (!_isFullScreen)
+            if (!_isFullScreen && !TrackedTarget)
                 PlayerButtonsSetActive(false);
 
             if (_trackedTargets.Count <= 1)
@@ -121,6 +122,8 @@ public class VideoPlayerController : MonoBehaviour
         }
         else
         {
+            if (!_videoPlayer.isPaused)
+                TrackedTarget.LoadingAnimation.ShowLoadingScreen();
             _playButtonImage.sprite = PauseSprite;
             _videoPlayer.Play();
         }
@@ -173,6 +176,12 @@ public class VideoPlayerController : MonoBehaviour
         RenderTrackedTarget(true);
     }
 
+    public void SetExitDialogActive(bool state)
+    {
+        _isExitDialog = state;
+        ExitDialog.SetActive(state);
+    }
+
     private void PlayerButtonsSetActive(bool condition)
     {
         PlayerButtons.SetActive(condition);
@@ -189,6 +198,7 @@ public class VideoPlayerController : MonoBehaviour
     {
         _videoPlayer = GetComponent<VideoPlayer>();
         _videoPlayer.loopPointReached += LoopPointReached;
+        _videoPlayer.prepareCompleted += PrepareCompleted;
         _trackedTargets = new List<TrackableEventHandler>();
         _playButtonImage = PlayButton.GetComponentsInChildren<Image>()[1];
         _fullScreenButtonImage = FullScreenButton.GetComponentsInChildren<Image>()[1];
@@ -197,10 +207,10 @@ public class VideoPlayerController : MonoBehaviour
 
     private void Update()
     {
-        //if (Input.GetKeyDown(KeyCode.Escape))
-        //    if (_isInFullScreenMod)
-        //        FullScreenButtonPressed();
-        //    else SetExitDialogActive(!_isExitDialog);
+        if (Input.GetKeyDown(KeyCode.Escape))
+            if (_isFullScreen)
+                FullScreenButtonPressed();
+            else SetExitDialogActive(!_isExitDialog);
     }
 
     private void RenderTrackedTarget(bool condition)
@@ -230,5 +240,10 @@ public class VideoPlayerController : MonoBehaviour
         source.Stop();
         _playButtonImage.sprite = PlaySprite;
         TrackedTarget.VideoContainer.ResetMaterialTexture();
+    }
+
+    private void PrepareCompleted(VideoPlayer source)
+    {
+        TrackedTarget.LoadingAnimation.DisableLoadingScreen();
     }
 }

@@ -25,7 +25,7 @@ public class TestVideoController : MonoBehaviour
         {
             if (Preview.activeInHierarchy)
             {
-                VideoPlayer.GetComponent<LoadingAnimator>().SetRunning();
+                VideoPlayer.GetComponent<LoadingAnimator123>().SetRunning();
                 Preview.SetActive(false);
             }
             VideoPlayer.Play();
@@ -54,7 +54,7 @@ public class TestVideoController : MonoBehaviour
 
     private void EndLoadingAnimation(VideoPlayer source)
     {
-        VideoPlayer.GetComponent<LoadingAnimator>().SetEnding();
+        VideoPlayer.GetComponent<LoadingAnimator123>().SetEnding();
     }
 }
 

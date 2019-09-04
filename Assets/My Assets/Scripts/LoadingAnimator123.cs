@@ -2,7 +2,7 @@
 using System.Collections;
 using System;
 
-public class LoadingAnimator : MonoBehaviour
+public class LoadingAnimator123 : MonoBehaviour
 {
     private Animator _backgroundAnimator;
     private Animator _ringAnimator;

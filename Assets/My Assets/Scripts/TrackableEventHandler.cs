@@ -12,7 +12,8 @@ public class TrackableEventHandler : MonoBehaviour, ITrackableEventHandler
     private TrackableBehaviour mTrackableBehaviour;
     private TrackableBehaviour.Status m_PreviousStatus;
     private TrackableBehaviour.Status m_NewStatus;
-    private VideoContainer _childVideoScreen;
+    private VideoContainer _videoScreen;
+    private LoadingAnimation _loadingAnimation;
     private bool _isRegistrated = false;
     private Action<bool, TrackableEventHandler> _onTracked;
 
@@ -20,9 +21,19 @@ public class TrackableEventHandler : MonoBehaviour, ITrackableEventHandler
     {
         get
         {
-            if (!_childVideoScreen)
-                _childVideoScreen = transform.GetChild(0).GetComponent<VideoContainer>();
-            return _childVideoScreen;
+            if (!_videoScreen)
+                _videoScreen = transform.GetChild(0).GetComponent<VideoContainer>();
+            return _videoScreen;
+        }
+    }
+
+    public LoadingAnimation LoadingAnimation
+    {
+        get
+        {
+            if (!_loadingAnimation)
+                _loadingAnimation = VideoContainer.transform.GetChild(0).GetComponent<LoadingAnimation>();
+            return _loadingAnimation;
         }
     }
 
@@ -108,6 +119,7 @@ public class TrackableEventHandler : MonoBehaviour, ITrackableEventHandler
         mTrackableBehaviour = GetComponent<TrackableBehaviour>();
         if (mTrackableBehaviour)
             mTrackableBehaviour.RegisterTrackableEventHandler(this);
+        LoadingAnimation.SetUp();
     }
 
     private void OnDestroy()
