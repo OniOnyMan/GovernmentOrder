@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
@@ -33,12 +34,10 @@ public class VideoPlayerController : MonoBehaviour
     {
         get
         {
+            if (_trackedTargets.Count == 0)
+                return _trackedTargetIndex = -1;
             if (_trackedTargetIndex < 0)
-            {
-                if (_trackedTargets.Count == 0)
-                    return _trackedTargetIndex = -1;
-                else return _trackedTargetIndex = 0;
-            }
+                return _trackedTargetIndex = _trackedTargets.Count + _trackedTargetIndex;
             else if (_trackedTargetIndex >= _trackedTargets.Count)
                 return _trackedTargetIndex %= _trackedTargets.Count;
             else return _trackedTargetIndex;
@@ -50,7 +49,7 @@ public class VideoPlayerController : MonoBehaviour
     private Image _fullScreenButtonImage;
     private List<TrackableEventHandler> _trackedTargets;
     private int _trackedTargetIndex = -1;
-    private bool _isInFullScreenMod;
+    private bool _isFullScreen;
 
     public void TargetTrackeStateChanged(bool condition, TrackableEventHandler sender)
     {
@@ -62,13 +61,18 @@ public class VideoPlayerController : MonoBehaviour
             Debug.LogWarningFormat("_trackedTarges.Exist {0} with result {1}", sender.name, existCondition);
             if (!existCondition)
             {
-                _trackedTargets.Add(sender);
-                Debug.LogWarningFormat("{0} added", sender.name);
+                if (TrackedTarget != sender) // TO DO: подумать про костыль
+                {
+                    _trackedTargets.Add(sender);
+                    Debug.LogWarningFormat("{0} added with index {1}, summary {2}", sender.name, _trackedTargets.IndexOf(sender), _trackedTargets.Count);
+                }
+                else Debug.LogErrorFormat("{0} already exist, but woulde be rendered", sender.name);
 
                 if (TrackedTarget == sender)
-                    RenderTrackedTarget(true, sender);
+                    RenderTrackedTarget(true);
+                PlayerButtonsSetActive(true);
 
-                if (_trackedTargets.Count > 1 && !_isInFullScreenMod)
+                if (_trackedTargets.Count > 1 && !_isFullScreen)
                     SwitchButtons.SetActive(true);
             }
             else
@@ -80,13 +84,27 @@ public class VideoPlayerController : MonoBehaviour
         {
             Debug.LogWarningFormat("{0} has lost", sender.gameObject.name);
             if (TrackedTarget == sender)
-                RenderTrackedTarget(false, sender);
+                RenderTrackedTarget(false);
 
-            _trackedTargets.Remove(sender);
-            Debug.LogWarningFormat("{0} removed", sender.name);
+            if (_isFullScreen)
+            {
+                if (TrackedTarget != sender)
+                {
+                    _trackedTargets.Remove(sender);
+                    Debug.LogWarningFormat("{0} removed", sender.name);
+                }
+            }
+            else
+            {
+                _trackedTargets.Remove(sender);
+                Debug.LogWarningFormat("{0} removed", sender.name);
+            }
 
             if (_trackedTargets.Count > 0)
-                RenderTrackedTarget(true, sender);
+                RenderTrackedTarget(true);
+
+            if (!_isFullScreen)
+                PlayerButtonsSetActive(false);
 
             if (_trackedTargets.Count <= 1)
                 SwitchButtons.SetActive(false);
@@ -117,19 +135,49 @@ public class VideoPlayerController : MonoBehaviour
     public void FullScreenButtonPressed()
     {
         var container = TrackedTarget.VideoContainer;
-        if (_isInFullScreenMod)
+        if (_isFullScreen)
         {
+            _isFullScreen = false;
             _fullScreenButtonImage.sprite = FullScreenSprite;
-            container.gameObject.SetActive(true);
             FullScreenController.Instance.DisableFullScreen();
+
+            if (TrackedTarget.IsTracked)
+                container.gameObject.SetActive(true);
+            else
+            {
+                LoopPointReached(_videoPlayer);
+                PlayerButtonsSetActive(false);
+                Debug.LogWarningFormat("{0} removed", TrackedTarget.name);
+                _trackedTargets.Remove(TrackedTarget);
+            }
+
+            if (_trackedTargets.Count > 1)
+                SwitchButtons.SetActive(true);
         }
         else
         {
+            _isFullScreen = true;
             _fullScreenButtonImage.sprite = SmallScreenSprite;
+            SwitchButtons.SetActive(false);
             FullScreenController.Instance.EnableFullScreen(
                 _videoPlayer.isPlaying ? (Texture)_videoPlayer.targetTexture 
                                        : container.PreviewSprite.texture);
+
         }
+    }
+
+    public void SwitchButtonPressed(int indexShifting)
+    {
+        RenderTrackedTarget(false);
+        _trackedTargetIndex += indexShifting;
+        RenderTrackedTarget(true);
+    }
+
+    private void PlayerButtonsSetActive(bool condition)
+    {
+        PlayerButtons.SetActive(condition);
+        if (!condition)
+            _playButtonImage.sprite = PlaySprite;
     }
 
     private void Awake()
@@ -155,9 +203,24 @@ public class VideoPlayerController : MonoBehaviour
         //    else SetExitDialogActive(!_isExitDialog);
     }
 
+    private void RenderTrackedTarget(bool condition)
+    {
+        var container = TrackedTarget.VideoContainer;
+        TrackedTarget.EnableComponents(condition);
+        if (condition)
+        {
+            _videoPlayer.clip = container.VideoClip;
+        }
+        else
+        {
+            if (!_isFullScreen)
+                LoopPointReached(_videoPlayer);
+        }
+    }
+
     private void HideUIElements()
     {
-        PlayerButtons.SetActive(false);
+        PlayerButtonsSetActive(false);
         SwitchButtons.SetActive(false);
         ExitDialog.SetActive(false);
     }
@@ -165,24 +228,7 @@ public class VideoPlayerController : MonoBehaviour
     private void LoopPointReached(VideoPlayer source)
     {
         source.Stop();
+        _playButtonImage.sprite = PlaySprite;
         TrackedTarget.VideoContainer.ResetMaterialTexture();
-    }
-
-    private void RenderTrackedTarget(bool condition, TrackableEventHandler target)
-    {
-        var container = target.VideoContainer;
-        target.EnableComponents(condition);
-        if (condition)
-        {
-            PlayerButtons.SetActive(true);
-            _videoPlayer.clip = container.VideoClip;
-        }
-        else
-        {
-            PlayerButtons.SetActive(false);
-            if (_videoPlayer.isPlaying)
-                PlayPauseButtonPressed();           
-            LoopPointReached(_videoPlayer);
-        }
     }
 }

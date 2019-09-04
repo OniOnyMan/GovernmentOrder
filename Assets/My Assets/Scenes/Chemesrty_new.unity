@@ -303,7 +303,7 @@ MonoBehaviour:
   mAspectRatio: 1
   mImageTargetType: 0
   mWidth: 10
-  mHeight: 9.984639
+  mHeight: 10
 --- !u!4 &67467777
 Transform:
   m_ObjectHideFlags: 0
@@ -367,7 +367,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   VideoClip: {fileID: 32900000, guid: f9ea1d175dc7395439fe0849b0154b4a, type: 3}
   PreviewSprite: {fileID: 21300000, guid: ac9267a67de07b04ea91ac0d3781f098, type: 3}
-  SpecialCount: 0
 --- !u!23 &84346096
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -438,13 +437,14 @@ GameObject:
   - component: {fileID: 171262776}
   - component: {fileID: 171262778}
   - component: {fileID: 171262777}
+  - component: {fileID: 171262779}
   m_Layer: 5
   m_Name: FullSceenPlayer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &171262776
 RectTransform:
   m_ObjectHideFlags: 0
@@ -502,6 +502,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 171262775}
   m_CullTransparentMesh: 0
+--- !u!114 &171262779
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 171262775}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5029b7c33a04eb64b89ece883e54b4b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &236880038
 GameObject:
   m_ObjectHideFlags: 0
@@ -629,7 +641,7 @@ MonoBehaviour:
   mAspectRatio: 1
   mImageTargetType: 0
   mWidth: 10
-  mHeight: 9.984639
+  mHeight: 10
 --- !u!21 &276896227
 Material:
   serializedVersion: 6
@@ -1074,7 +1086,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   VideoClip: {fileID: 32900000, guid: ee0c572086e6f134e9d474341a90af52, type: 3}
   PreviewSprite: {fileID: 21300000, guid: 306a8436fb738a6439f96571829488be, type: 3}
-  SpecialCount: 0
 --- !u!23 &845433795
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2574,7 +2585,7 @@ MonoBehaviour:
   mAspectRatio: 1
   mImageTargetType: 0
   mWidth: 10
-  mHeight: 9.984639
+  mHeight: 10
 --- !u!1 &2073705065
 GameObject:
   m_ObjectHideFlags: 0
@@ -2682,7 +2693,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   VideoClip: {fileID: 32900000, guid: fd7c3e805c6cc1640a743fb2413380ed, type: 3}
   PreviewSprite: {fileID: 21300000, guid: 5d0f924f99404644d9c278c8a5361535, type: 3}
-  SpecialCount: 0
 --- !u!1 &1042044699835784
 GameObject:
   m_ObjectHideFlags: 0
@@ -2939,7 +2949,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Texture: {fileID: 8400000, guid: dd8693e2600162f42837558221ad82f1, type: 2}
+  m_Texture: {fileID: 2800000, guid: 5d0f924f99404644d9c278c8a5361535, type: 3}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -3019,7 +3029,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1285109367}
         m_MethodName: ResetButtonPressed
         m_Mode: 1
         m_Arguments:
@@ -3355,13 +3365,13 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: NextButtonPressed
-        m_Mode: 6
+      - m_Target: {fileID: 1285109367}
+        m_MethodName: SwitchButtonPressed
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: -1
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 1
@@ -3409,7 +3419,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1285109367}
-        m_MethodName: PlayButtonPressed
+        m_MethodName: PlayPauseButtonPressed
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3461,7 +3471,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1285109367}
         m_MethodName: FullScreenButtonPressed
         m_Mode: 1
         m_Arguments:
@@ -3514,13 +3524,13 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: NextButtonPressed
-        m_Mode: 6
+      - m_Target: {fileID: 1285109367}
+        m_MethodName: SwitchButtonPressed
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -3778,7 +3788,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -3812,8 +3822,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 224558349118225732}
   - {fileID: 224608105613780186}
+  - {fileID: 224558349118225732}
   - {fileID: 224967132412886446}
   m_Father: {fileID: 224145914371505626}
   m_RootOrder: 1
@@ -3836,7 +3846,7 @@ RectTransform:
   m_Children:
   - {fileID: 224952458807177116}
   m_Father: {fileID: 224484818332278908}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
@@ -3856,7 +3866,7 @@ RectTransform:
   m_Children:
   - {fileID: 224273726012920390}
   m_Father: {fileID: 224484818332278908}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}

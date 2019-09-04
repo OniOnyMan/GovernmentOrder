@@ -34,6 +34,7 @@ public class VideoContainer : MonoBehaviour
 
     public void SetMaterialTexture(Texture texture)
     {
+        FullScreenController.Instance.SetScreenTexture(texture);
         RenderedMaterial.SetTexture("_MainTex", texture);
         RenderedMaterial.SetTexture("_EmissionMap", texture);
     }
