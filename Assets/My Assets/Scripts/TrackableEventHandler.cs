@@ -16,7 +16,7 @@ public class TrackableEventHandler : MonoBehaviour, ITrackableEventHandler
     private bool _isRegistrated = false;
     private Action<bool, TrackableEventHandler> _onTracked;
 
-    public VideoContainer ChildVideoContainer
+    public VideoContainer VideoContainer
     {
         get
         {

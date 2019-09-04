@@ -19,9 +19,20 @@ public class FullScreenController : MonoBehaviour
         }
     }
 
-    public void EnableFullScreen(Texture texture)
+    public void SetScreenTexture(Texture texture)
     {
         _sceenImage.texture = texture;
+    }
+
+    public void EnableFullScreen()
+    {
+        gameObject.SetActive(true);
+    }
+
+    public void EnableFullScreen(Texture texture)
+    {
+        SetScreenTexture(texture);
+        EnableFullScreen();
     }
 
     public void DisableFullScreen()

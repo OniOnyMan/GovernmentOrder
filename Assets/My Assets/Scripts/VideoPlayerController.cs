@@ -43,11 +43,6 @@ public class VideoPlayerController : MonoBehaviour
                 return _trackedTargetIndex %= _trackedTargets.Count;
             else return _trackedTargetIndex;
         }
-
-        private set
-        {
-            _trackedTargetIndex = value;
-        }
     }
 
     private VideoPlayer _videoPlayer;
@@ -56,57 +51,6 @@ public class VideoPlayerController : MonoBehaviour
     private List<TrackableEventHandler> _trackedTargets;
     private int _trackedTargetIndex = -1;
     private bool _isInFullScreenMod;
-
-    public void PlayButtonPressed()
-    {
-        TrackedTarget.ChildVideoContainer.SetMaterialTexture(_videoPlayer.targetTexture);
-        if (_videoPlayer.isPlaying)
-        {
-            _playButtonImage.sprite = PlaySprite;
-            _videoPlayer.Pause();
-        }
-        else
-        {
-            _playButtonImage.sprite = PauseSprite;
-            _videoPlayer.Play();
-        }
-    }
-
-    private void Awake()
-    {
-        Instance = this;
-    }
-
-    private void Start()
-    {
-        _videoPlayer = GetComponent<VideoPlayer>();
-        _videoPlayer.loopPointReached += LoopPointReached;
-        _trackedTargets = new List<TrackableEventHandler>();
-        _playButtonImage = PlayButton.GetComponentsInChildren<Image>()[1];
-        _fullScreenButtonImage = FullScreenButton.GetComponentsInChildren<Image>()[1];
-        HideUIElements();
-    }
-
-    private void LoopPointReached(VideoPlayer source)
-    {
-        source.Stop();
-        TrackedTarget.ChildVideoContainer.ResetMaterialTexture();
-    }
-
-    private void Update()
-    {
-        //if (Input.GetKeyDown(KeyCode.Escape))
-        //    if (_isInFullScreenMod)
-        //        FullScreenButtonPressed();
-        //    else SetExitDialogActive(!_isExitDialog);
-    }
-
-    private void HideUIElements()
-    {
-        PlayerButtons.SetActive(false);
-        SwitchButtons.SetActive(false);
-        ExitDialog.SetActive(false);
-    }
 
     public void TargetTrackeStateChanged(bool condition, TrackableEventHandler sender)
     {
@@ -136,9 +80,7 @@ public class VideoPlayerController : MonoBehaviour
         {
             Debug.LogWarningFormat("{0} has lost", sender.gameObject.name);
             if (TrackedTarget == sender)
-            {
                 RenderTrackedTarget(false, sender);
-            }
 
             _trackedTargets.Remove(sender);
             Debug.LogWarningFormat("{0} removed", sender.name);
@@ -151,9 +93,84 @@ public class VideoPlayerController : MonoBehaviour
         }
     }
 
+    public void PlayPauseButtonPressed()
+    {
+        TrackedTarget.VideoContainer.SetMaterialTexture(_videoPlayer.targetTexture);
+        if (_videoPlayer.isPlaying)
+        {
+            _playButtonImage.sprite = PlaySprite;
+            _videoPlayer.Pause();
+        }
+        else
+        {
+            _playButtonImage.sprite = PauseSprite;
+            _videoPlayer.Play();
+        }
+    }
+
+    public void ResetButtonPressed()
+    {
+        _videoPlayer.Stop();
+        PlayPauseButtonPressed();
+    }
+
+    public void FullScreenButtonPressed()
+    {
+        var container = TrackedTarget.VideoContainer;
+        if (_isInFullScreenMod)
+        {
+            _fullScreenButtonImage.sprite = FullScreenSprite;
+            container.gameObject.SetActive(true);
+            FullScreenController.Instance.DisableFullScreen();
+        }
+        else
+        {
+            _fullScreenButtonImage.sprite = SmallScreenSprite;
+            FullScreenController.Instance.EnableFullScreen(
+                _videoPlayer.isPlaying ? (Texture)_videoPlayer.targetTexture 
+                                       : container.PreviewSprite.texture);
+        }
+    }
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
+    private void Start()
+    {
+        _videoPlayer = GetComponent<VideoPlayer>();
+        _videoPlayer.loopPointReached += LoopPointReached;
+        _trackedTargets = new List<TrackableEventHandler>();
+        _playButtonImage = PlayButton.GetComponentsInChildren<Image>()[1];
+        _fullScreenButtonImage = FullScreenButton.GetComponentsInChildren<Image>()[1];
+        HideUIElements();
+    }
+
+    private void Update()
+    {
+        //if (Input.GetKeyDown(KeyCode.Escape))
+        //    if (_isInFullScreenMod)
+        //        FullScreenButtonPressed();
+        //    else SetExitDialogActive(!_isExitDialog);
+    }
+
+    private void HideUIElements()
+    {
+        PlayerButtons.SetActive(false);
+        SwitchButtons.SetActive(false);
+        ExitDialog.SetActive(false);
+    }
+
+    private void LoopPointReached(VideoPlayer source)
+    {
+        source.Stop();
+        TrackedTarget.VideoContainer.ResetMaterialTexture();
+    }
+
     private void RenderTrackedTarget(bool condition, TrackableEventHandler target)
     {
-        var container = target.ChildVideoContainer;
+        var container = target.VideoContainer;
         target.EnableComponents(condition);
         if (condition)
         {
@@ -164,7 +181,7 @@ public class VideoPlayerController : MonoBehaviour
         {
             PlayerButtons.SetActive(false);
             if (_videoPlayer.isPlaying)
-                PlayButtonPressed();           
+                PlayPauseButtonPressed();           
             LoopPointReached(_videoPlayer);
         }
     }
