@@ -20,11 +20,33 @@ public class VideoPlayerController : MonoBehaviour
     public Sprite SmallScreenSprite;
 
     public static VideoPlayerController Instance { get; private set; }
+
     public TrackableEventHandler TrackedTarget
     {
         get
         {
-            return _trackedTargetIndex >= 0 && _trackedTargets.Count > 0 ? _trackedTargets[_trackedTargetIndex] : null;
+            return TrackedTargetIndex < 0  ? null : _trackedTargets[TrackedTargetIndex];
+        }
+    }
+
+    public int TrackedTargetIndex
+    {
+        get
+        {
+            if (_trackedTargetIndex < 0)
+            {
+                if (_trackedTargets.Count == 0)
+                    return _trackedTargetIndex = -1;
+                else return _trackedTargetIndex = 0;
+            }
+            else if (_trackedTargetIndex >= _trackedTargets.Count)
+                return _trackedTargetIndex %= _trackedTargets.Count;
+            else return _trackedTargetIndex;
+        }
+
+        private set
+        {
+            _trackedTargetIndex = value;
         }
     }
 
@@ -33,7 +55,6 @@ public class VideoPlayerController : MonoBehaviour
     private Image _fullScreenButtonImage;
     private List<TrackableEventHandler> _trackedTargets;
     private int _trackedTargetIndex = -1;
-    
     private bool _isInFullScreenMod;
 
     public void PlayButtonPressed()
@@ -100,14 +121,8 @@ public class VideoPlayerController : MonoBehaviour
                 _trackedTargets.Add(sender);
                 Debug.LogWarningFormat("{0} added", sender.name);
 
-                if (!TrackedTarget)
-                {
-                    _trackedTargetIndex = 0;
-                    Debug.LogErrorFormat("_trackedTarget now is {0}", sender.name);
-                }
-
                 if (TrackedTarget == sender)
-                    RenderTrackedTarget(true);
+                    RenderTrackedTarget(true, sender);
 
                 if (_trackedTargets.Count > 1 && !_isInFullScreenMod)
                     SwitchButtons.SetActive(true);
@@ -120,23 +135,26 @@ public class VideoPlayerController : MonoBehaviour
         else
         {
             Debug.LogWarningFormat("{0} has lost", sender.gameObject.name);
-            RenderTrackedTarget(false);
-            
+            if (TrackedTarget == sender)
+            {
+                RenderTrackedTarget(false, sender);
+            }
+
             _trackedTargets.Remove(sender);
             Debug.LogWarningFormat("{0} removed", sender.name);
 
-            if (_trackedTargets.Count == 0)
-                _trackedTargetIndex = -1;
-            else if (_trackedTargets.Count == 1)
-                SwitchButtons.SetActive(false);
+            if (_trackedTargets.Count > 0)
+                RenderTrackedTarget(true, sender);
 
+            if (_trackedTargets.Count <= 1)
+                SwitchButtons.SetActive(false);
         }
     }
 
-    private void RenderTrackedTarget(bool condition)
+    private void RenderTrackedTarget(bool condition, TrackableEventHandler target)
     {
-        var container = TrackedTarget.ChildVideoContainer;
-        TrackedTarget.EnableComponents(condition);
+        var container = target.ChildVideoContainer;
+        target.EnableComponents(condition);
         if (condition)
         {
             PlayerButtons.SetActive(true);
