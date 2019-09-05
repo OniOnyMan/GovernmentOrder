@@ -35,8 +35,6 @@ public class LoadingAnimation : MonoBehaviour
         }
     }
 
-    private float _disableTime = 0.3f;
-    private float _circleRotatingTime = 0.48f;
     private Transform _circle;
     private SpriteRenderer _sprite;
     private SpriteRenderer _circleSprite;
@@ -45,9 +43,15 @@ public class LoadingAnimation : MonoBehaviour
 
     public void DisableLoadingScreen()
     {
-        Sprite.DOColor(new Color(Sprite.color.r, Sprite.color.g, Sprite.color.b, 0), _disableTime).SetEase(Ease.Linear).OnComplete(() => Sprite.gameObject.SetActive(false));
-        CircleSprite.DOColor(new Color(CircleSprite.color.r, CircleSprite.color.g, CircleSprite.color.b, 0), _disableTime).SetEase(Ease.Linear);
+        Sprite.DOColor(new Color(Sprite.color.r, Sprite.color.g, Sprite.color.b, 0), FullScreenController.DisableTime).SetEase(Ease.Linear).OnComplete(() => Sprite.gameObject.SetActive(false));
+        CircleSprite.DOColor(new Color(CircleSprite.color.r, CircleSprite.color.g, CircleSprite.color.b, 0), FullScreenController.DisableTime).SetEase(Ease.Linear);
         FullScreenController.Instance.DisableLoadingScreen();
+    }
+
+    public void HideLoadingScreen()
+    {
+        Sprite.gameObject.SetActive(false);
+        FullScreenController.Instance.HideLoadingScreen();
     }
 
     public void ShowLoadingScreen()
@@ -62,6 +66,6 @@ public class LoadingAnimation : MonoBehaviour
     {
         _spriteColor = Sprite.color;
         _circleSpriteColor = CircleSprite.color;
-        Circle.DOLocalRotate(new Vector3(0, 0, 360), _circleRotatingTime, RotateMode.FastBeyond360).SetEase(Ease.Linear).SetLoops(-1, LoopType.Restart);
+        Circle.DOLocalRotate(new Vector3(0, 0, 360), FullScreenController.CircleRotatingTime, RotateMode.FastBeyond360).SetEase(Ease.Linear).SetLoops(-1, LoopType.Restart);
     }
 }

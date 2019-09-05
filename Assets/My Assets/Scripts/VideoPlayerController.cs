@@ -149,6 +149,7 @@ public class VideoPlayerController : MonoBehaviour
             else
             {
                 LoopPointReached(_videoPlayer);
+                PrepareCompleted(_videoPlayer);
                 PlayerButtonsSetActive(false);
                 Debug.LogWarningFormat("{0} removed", TrackedTarget.name);
                 _trackedTargets.Remove(TrackedTarget);
@@ -235,7 +236,10 @@ public class VideoPlayerController : MonoBehaviour
         else
         {
             if (!_isFullScreen)
+            {
                 LoopPointReached(_videoPlayer);
+                PrepareCompleted(_videoPlayer);
+            }
         }
     }
 
@@ -255,6 +259,9 @@ public class VideoPlayerController : MonoBehaviour
 
     private void PrepareCompleted(VideoPlayer source)
     {
-        TrackedTarget.LoadingAnimation.DisableLoadingScreen();
+        if(TrackedTarget.IsTracked)
+            TrackedTarget.LoadingAnimation.DisableLoadingScreen();
+        else
+            TrackedTarget.LoadingAnimation.HideLoadingScreen();
     }
 }
