@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <QCARConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="qcar_config.xsd">
   <Tracking>
-    <ImageTarget name="external_3" size="12.000000 2.108865" />
+    <ImageTarget name="external_3" size="12.000000 3.840000" />
     <ImageTarget name="photo_3" size="10.000000 9.453781" />
     <ImageTarget name="photo_2" size="10.000000 9.838073" />
     <ImageTarget name="photo_1" size="10.000000 9.961538" />
