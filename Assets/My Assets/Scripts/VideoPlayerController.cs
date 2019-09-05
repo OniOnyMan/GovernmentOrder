@@ -164,9 +164,8 @@ public class VideoPlayerController : MonoBehaviour
             _fullScreenButtonImage.sprite = SmallScreenSprite;
             SwitchButtons.SetActive(false);
             FullScreenController.Instance.EnableFullScreen(
-                _videoPlayer.isPlaying ? (Texture)_videoPlayer.targetTexture 
+                _videoPlayer.isPlaying ? (Texture)_videoPlayer.targetTexture
                                        : container.PreviewSprite.texture);
-
         }
     }
 
@@ -259,9 +258,14 @@ public class VideoPlayerController : MonoBehaviour
 
     private void PrepareCompleted(VideoPlayer source)
     {
-        if(TrackedTarget.IsTracked)
-            TrackedTarget.LoadingAnimation.DisableLoadingScreen();
+        if (!_isFullScreen)
+        {
+            if (TrackedTarget.IsTracked)
+                TrackedTarget.LoadingAnimation.DisableLoadingScreen();
+            else
+                TrackedTarget.LoadingAnimation.HideLoadingScreen();
+        }
         else
-            TrackedTarget.LoadingAnimation.HideLoadingScreen();
+            TrackedTarget.LoadingAnimation.DisableLoadingScreen();
     }
 }
