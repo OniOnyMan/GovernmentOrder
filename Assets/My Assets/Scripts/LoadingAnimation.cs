@@ -36,7 +36,7 @@ public class LoadingAnimation : MonoBehaviour
     }
 
     private float _disableTime = 0.3f;
-    private float _circleRotatingTime = 0.4f;
+    private float _circleRotatingTime = 0.48f;
     private Transform _circle;
     private SpriteRenderer _sprite;
     private SpriteRenderer _circleSprite;

@@ -10,7 +10,7 @@ public class FullScreenController : MonoBehaviour
     private Image _loadingImage;
     private Image _circleImage;
     private float _disableTime = 0.3f;
-    private float _circleRotatingTime = 0.4f;
+    private float _circleRotatingTime = 0.48f;
     private Color _spriteColor;
     private Color _circleSpriteColor;
 

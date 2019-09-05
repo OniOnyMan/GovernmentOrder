@@ -182,6 +182,17 @@ public class VideoPlayerController : MonoBehaviour
         ExitDialog.SetActive(state);
     }
 
+    public void QuitButtonPressed()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#elif UNITY_WEBPLAYER
+        Application.OpenURL(webplayerQuitURL);
+#else
+        Application.Quit();
+#endif
+    }
+
     private void PlayerButtonsSetActive(bool condition)
     {
         PlayerButtons.SetActive(condition);
